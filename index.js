@@ -4,8 +4,11 @@ const download = require('download');
 const fse = require('fs-extra');
 const path = require('path');
 const ProgressBar = require('progress');
-const sanitize = require("sanitize-filename");
+const sanitize = require('sanitize-filename');
+const prompt = require('async-prompt');
 
+const supported_servers = ['netease', 'tencent', 'kugou', 'xiami', 'baidu'];
+const supported_types = ['song', 'playlist', 'album', 'search', 'artist'];
 /**
  * build meting API url
  * @param {String} server music server(netease, tencent, kugou, xiami, baidu)
@@ -14,18 +17,20 @@ const sanitize = require("sanitize-filename");
  * @returns {String} the meting API url
  */
 function buildURL(server, type, id) {
+    if (!supported_servers.includes(server)) throw new Error('Server not support');
+    if (!supported_types.includes(type)) throw new Error('Type not support');
     let url = API;
-    url = url.replace(":server", server);
-    url = url.replace(":type", type);
-    url = url.replace(":id", id);
-    url = url.replace(":r", Math.random());
+    url = url.replace(':server', server);
+    url = url.replace(':type', type);
+    url = url.replace(':id', id);
+    url = url.replace(':r', Math.random());
     return url;
 }
 
 const main = async () => {
-    const MUSIC_SERVER = 'netease';
-    const MUSIC_TYPE = 'playlist';
-    const MUSIC_ID = '312194477';
+    const MUSIC_SERVER = await prompt('Server: ');
+    const MUSIC_TYPE = await prompt('Type  : ');
+    const MUSIC_ID = await prompt('ID    : ');
     const DOWNLOAD_DIR = path.join(MUSIC_TYPE, MUSIC_SERVER, MUSIC_ID);
     await fse.ensureDir(DOWNLOAD_DIR);
 

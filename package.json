@@ -9,6 +9,7 @@
   "author": "ZhangZisu",
   "license": "Apache-2.0",
   "dependencies": {
+    "async-prompt": "^1.0.1",
     "axios": "^0.18.0",
     "download": "^7.1.0",
     "fs-extra": "^7.0.0",
